@@ -79,12 +79,12 @@ async def list_view(
     }
     try:
         return templates.TemplateResponse(
-            f"{resource}/list.html",
+            f"admin/{resource}/list.html",
             context=context,
         )
     except TemplateNotFound:
         return templates.TemplateResponse(
-            "list.html",
+            "admin/list.html",
             context=context,
         )
 
@@ -137,12 +137,12 @@ async def update(
         }
         try:
             return templates.TemplateResponse(
-                f"{resource}/update.html",
+                f"admin/{resource}/update.html",
                 context=context,
             )
         except TemplateNotFound:
             return templates.TemplateResponse(
-                "update.html",
+                "admin/update.html",
                 context=context,
             )
     return redirect(request, "list_view", resource=resource)
@@ -172,12 +172,12 @@ async def update_view(
     }
     try:
         return templates.TemplateResponse(
-            f"{resource}/update.html",
+            f"admin/{resource}/update.html",
             context=context,
         )
     except TemplateNotFound:
         return templates.TemplateResponse(
-            "update.html",
+            "admin/update.html",
             context=context,
         )
 
@@ -202,12 +202,12 @@ async def create_view(
     }
     try:
         return templates.TemplateResponse(
-            f"{resource}/create.html",
+            f"admin/{resource}/create.html",
             context=context,
         )
     except TemplateNotFound:
         return templates.TemplateResponse(
-            "create.html",
+            "admin/create.html",
             context=context,
         )
 
@@ -242,12 +242,12 @@ async def create(
     }
     try:
         return templates.TemplateResponse(
-            f"{resource}/create.html",
+            f"admin/{resource}/create.html",
             context=context,
         )
     except TemplateNotFound:
         return templates.TemplateResponse(
-            "create.html",
+            "admin/create.html",
             context=context,
         )
 

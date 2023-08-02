@@ -11,6 +11,7 @@ from fastapi_admin import VERSION
 from fastapi_admin.constants import BASE_DIR
 
 templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
+
 templates.env.globals["VERSION"] = VERSION
 templates.env.globals["NOW_YEAR"] = date.today().year
 templates.env.add_extension("jinja2.ext.i18n")

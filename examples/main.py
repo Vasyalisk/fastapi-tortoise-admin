@@ -25,9 +25,12 @@ from fastapi_admin.exceptions import (
     server_error_exception,
     unauthorized_error_exception,
 )
+import logging
 
 
 def create_app():
+    logging.basicConfig(level="INFO")
+
     app = FastAPI()
     app.mount(
         "/static",

@@ -14,7 +14,7 @@ from iso8601.iso8601 import is_iso8601
 
 
 class Input(Widget):
-    template = "widgets/inputs/input.html"
+    template = "admin/widgets/inputs/input.html"
 
     def __init__(
             self, help_text: Optional[str] = None, default: Any = None, null: bool = False, **context
@@ -67,7 +67,7 @@ class Text(Input):
 
 
 class Select(Input):
-    template = "widgets/inputs/select.html"
+    template = "admin/widgets/inputs/select.html"
 
     def __init__(
             self,
@@ -118,7 +118,7 @@ class ForeignKey(Select):
 
 
 class ManyToMany(Select):
-    template = "widgets/inputs/many_to_many.html"
+    template = "admin/widgets/inputs/many_to_many.html"
 
     def __init__(
             self,
@@ -176,7 +176,7 @@ class Email(Text):
 
 
 class Json(Input):
-    template = "widgets/inputs/json.html"
+    template = "admin/widgets/inputs/json.html"
 
     def __init__(
             self,
@@ -200,16 +200,16 @@ class Json(Input):
 
 
 class TextArea(Text):
-    template = "widgets/inputs/textarea.html"
+    template = "admin/widgets/inputs/textarea.html"
     input_type = "textarea"
 
 
 class Editor(Text):
-    template = "widgets/inputs/editor.html"
+    template = "admin/widgets/inputs/editor.html"
 
 
 class DateTime(Text):
-    template = "widgets/inputs/datetime.html"
+    template = "admin/widgets/inputs/datetime.html"
 
     async def parse_value(self, request: Request, value: Any):
         if not is_iso8601(value):
@@ -219,7 +219,7 @@ class DateTime(Text):
 
 
 class Date(Text):
-    template = "widgets/inputs/date.html"
+    template = "admin/widgets/inputs/date.html"
 
     async def parse_value(self, request: Request, value: Any):
         if not is_iso8601(value):
@@ -255,12 +255,12 @@ class File(Input):
 
 
 class Image(File):
-    template = "widgets/inputs/image.html"
+    template = "admin/widgets/inputs/image.html"
     input_type = "file"
 
 
 class Radio(Select):
-    template = "widgets/inputs/radio.html"
+    template = "admin/widgets/inputs/radio.html"
 
     def __init__(
             self,
@@ -277,11 +277,11 @@ class Radio(Select):
 
 
 class RadioEnum(Enum):
-    template = "widgets/inputs/radio.html"
+    template = "admin/widgets/inputs/radio.html"
 
 
 class Switch(Input):
-    template = "widgets/inputs/switch.html"
+    template = "admin/widgets/inputs/switch.html"
 
     async def parse_value(self, request: Request, value: str):
         if value == "on":
@@ -298,4 +298,4 @@ class Number(Text):
 
 
 class Color(Text):
-    template = "widgets/inputs/color.html"
+    template = "admin/widgets/inputs/color.html"

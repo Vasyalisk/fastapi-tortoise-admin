@@ -77,14 +77,14 @@ class ToolbarAction(Action):
     class_: Optional[str]
 
 
-def _setup_read_only_fields(cls: "Model"):
+def _setup_read_only_fields(cls):
     """
     Search for all field names which are marked as read-only and replace found strings with display-only widgets
     :return:
     """
 
     if not cls.read_only_fields:
-        return
+        return cls
 
     pk_column = cls.model._meta.db_pk_column
     cls.fields = list(cls.fields)
@@ -103,13 +103,13 @@ def _setup_read_only_fields(cls: "Model"):
     return cls
 
 
-def _setup_write_only_fields(cls: "Model"):
+def _setup_write_only_fields(cls):
     """
     Search for all field names which are marked as write-only and replace found strings with input-only widgets
     :return:
     """
     if not cls.write_only_fields:
-        return
+        return cls
 
     pk_column = cls.model._meta.db_pk_column
     cls.fields = list(cls.fields)

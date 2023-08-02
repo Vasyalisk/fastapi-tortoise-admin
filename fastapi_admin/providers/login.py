@@ -50,6 +50,8 @@ class UsernamePasswordProvider(Provider):
             self,
             request: Request,
     ):
+        request.state.username_field_name = self.username_field_name
+
         return templates.TemplateResponse(
             self.template,
             context={

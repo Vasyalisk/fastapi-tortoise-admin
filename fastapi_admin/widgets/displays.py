@@ -37,18 +37,18 @@ class InputOnly(Display):
 
 
 class Boolean(Display):
-    template = "widgets/displays/boolean.html"
+    template = "admin/widgets/displays/boolean.html"
 
 
 class Image(Display):
-    template = "widgets/displays/image.html"
+    template = "admin/widgets/displays/image.html"
 
     def __init__(self, width: Optional[str] = None, height: Optional[str] = None):
         super().__init__(width=width, height=height)
 
 
 class Json(Display):
-    template = "widgets/displays/json.html"
+    template = "admin/widgets/displays/json.html"
 
     async def render(self, request: Request, value: dict):
         return await super(Json, self).render(request, json.dumps(value))

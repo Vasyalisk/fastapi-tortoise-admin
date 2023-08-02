@@ -15,7 +15,7 @@ async def home(
     resources=Depends(get_resources),
 ):
     return templates.TemplateResponse(
-        "dashboard.html",
+        "admin/dashboard.html",
         context={
             "request": request,
             "resources": resources,

@@ -27,7 +27,7 @@ class Filter(Input):
 
 
 class Search(Filter):
-    template = "widgets/filters/search.html"
+    template = "admin/widgets/filters/search.html"
 
     def __init__(
         self,
@@ -51,7 +51,7 @@ class Search(Filter):
 
 
 class Datetime(Filter):
-    template = "widgets/filters/datetime.html"
+    template = "admin/widgets/filters/datetime.html"
 
     def __init__(
         self,
@@ -99,7 +99,7 @@ class Date(Datetime):
 
 
 class Select(Filter):
-    template = "widgets/filters/select.html"
+    template = "admin/widgets/filters/select.html"
 
     def __init__(self, name: str, label: str, null: bool = True):
         super().__init__(name, label, null=null)
