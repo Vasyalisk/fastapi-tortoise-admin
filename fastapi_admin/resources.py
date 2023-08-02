@@ -37,11 +37,11 @@ class Field:
     input: inputs.Input
 
     def __init__(
-        self,
-        name: str,
-        label: Optional[str] = None,
-        display: Optional[displays.Display] = None,
-        input_: Optional[Widget] = None,
+            self,
+            name: str,
+            label: Optional[str] = None,
+            display: Optional[displays.Display] = None,
+            input_: Optional[Widget] = None,
     ):
         self.name = name
         self.label = label or name.title()
@@ -77,6 +77,57 @@ class ToolbarAction(Action):
     class_: Optional[str]
 
 
+def _setup_read_only_fields(cls: "Model"):
+    """
+    Search for all field names which are marked as read-only and replace found strings with display-only widgets
+    :return:
+    """
+
+    if not cls.read_only_fields:
+        return
+
+    pk_column = cls.model._meta.db_pk_column
+    cls.fields = list(cls.fields)
+
+    for name in cls.read_only_fields:
+        try:
+            i = cls.fields.index(name)
+        except ValueError:
+            continue
+
+        if name == pk_column:
+            continue
+
+        cls.fields[i] = Field(name=name, input_=inputs.DisplayOnly())
+
+    return cls
+
+
+def _setup_write_only_fields(cls: "Model"):
+    """
+    Search for all field names which are marked as write-only and replace found strings with input-only widgets
+    :return:
+    """
+    if not cls.write_only_fields:
+        return
+
+    pk_column = cls.model._meta.db_pk_column
+    cls.fields = list(cls.fields)
+
+    for name in cls.write_only_fields:
+        try:
+            i = cls.fields.index(name)
+        except ValueError:
+            continue
+
+        assert name != pk_column, f"Primary key can not be writeable: {name}"
+        cls.fields[i] = Field(name=name, display=displays.InputOnly())
+
+    return cls
+
+
+@_setup_write_only_fields
+@_setup_read_only_fields
 class Model(Resource):
     model: Type[TortoiseModel]
     fields: List[Union[str, Field, ComputeField]] = []
@@ -84,6 +135,8 @@ class Model(Resource):
     page_pre_title: Optional[str] = None
     page_title: Optional[str] = None
     filters: List[Union[str, Filter]] = []
+    read_only_fields = []
+    write_only_fields = []
 
     async def get_toolbar_actions(self, request: Request) -> List[ToolbarAction]:
         return [
@@ -109,15 +162,15 @@ class Model(Resource):
     async def get_actions(self, request: Request) -> List[Action]:
         return [
             Action(
-                label=_("update"), icon="ti ti-edit", name="update", method=Method.GET, ajax=False
+                label=_("Update"), icon="ti ti-edit", name="update", method=Method.GET, ajax=False
             ),
-            Action(label=_("delete"), icon="ti ti-trash", name="delete", method=Method.DELETE),
+            Action(label=_("Delete"), icon="ti ti-trash", name="delete", method=Method.DELETE),
         ]
 
     async def get_bulk_actions(self, request: Request) -> List[Action]:
         return [
             Action(
-                label=_("delete_selected"),
+                label=_("Delete selected"),
                 icon="ti ti-trash",
                 name="delete",
                 method=Method.DELETE,
@@ -135,9 +188,9 @@ class Model(Resource):
             if isinstance(input_, inputs.File):
                 cls.enctype = "multipart/form-data"
             if (
-                isinstance(input_, inputs.ForeignKey)
-                and (obj is not None)
-                and name in obj._meta.fk_fields
+                    isinstance(input_, inputs.ForeignKey)
+                    and (obj is not None)
+                    and name in obj._meta.fk_fields
             ):
                 await obj.fetch_related(name)
                 # Value must be the string representation of the fk obj
@@ -277,12 +330,12 @@ class Model(Resource):
                 if field.name == pk_column:
                     continue
                 if (is_display and isinstance(field.display, displays.InputOnly)) or (
-                    not is_display and isinstance(field.input, inputs.DisplayOnly)
+                        not is_display and isinstance(field.input, inputs.DisplayOnly)
                 ):
                     continue
             if (
-                field.name in cls.model._meta.fetch_fields
-                and field.name not in cls.model._meta.fk_fields | cls.model._meta.m2m_fields
+                    field.name in cls.model._meta.fetch_fields
+                    and field.name not in cls.model._meta.fk_fields | cls.model._meta.m2m_fields
             ):
                 continue
             ret.append(field)
@@ -319,11 +372,11 @@ class Dropdown(Resource):
 
 
 async def render_values(
-    request: Request,
-    model: "Model",
-    fields: List["Field"],
-    values: List[Dict[str, Any]],
-    display: bool = True,
+        request: Request,
+        model: "Model",
+        fields: List["Field"],
+        values: List[Dict[str, Any]],
+        display: bool = True,
 ) -> Tuple[List[List[Any]], List[dict], List[dict], List[List[dict]]]:
     """
     render values with template render

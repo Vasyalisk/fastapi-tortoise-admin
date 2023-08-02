@@ -1,6 +1,6 @@
 from typing import Dict, List, Optional, Type
 
-import redis.asyncio as redis
+from redis.asyncio import Redis
 from fastapi import FastAPI
 from pydantic import HttpUrl
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -22,16 +22,16 @@ class FastAPIAdmin(FastAPI):
     admin_path: str
     resources: List[Type[Resource]] = []
     model_resources: Dict[Type[Model], Type[Resource]] = {}
-    redis: redis.Redis
+    redis: Redis
     language_switch: bool = True
     favicon_url: Optional[HttpUrl] = None
 
     async def configure(
         self,
-        redis: redis.Redis,
+        redis: Redis,
         logo_url: str = None,
         default_locale: str = "en_US",
-        language_switch: bool = True,
+        language_switch: bool = False,
         admin_path: str = "/admin",
         template_folders: Optional[List[str]] = None,
         providers: Optional[List[Provider]] = None,

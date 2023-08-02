@@ -3,10 +3,11 @@ import datetime
 from tortoise import Model, fields
 
 from examples.enums import ProductType, Status
-from fastapi_admin.models import AbstractAdmin
 
 
-class Admin(AbstractAdmin):
+class Admin(Model):
+    username = fields.CharField(unique=True, max_length=255)
+    password = fields.CharField(max_length=255)
     last_login = fields.DatetimeField(description="Last Login", default=datetime.datetime.now)
     email = fields.CharField(max_length=200, default="")
     avatar = fields.CharField(max_length=200, default="")

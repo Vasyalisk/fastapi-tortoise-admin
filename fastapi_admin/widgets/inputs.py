@@ -10,6 +10,8 @@ from tortoise import Model
 from fastapi_admin.file_upload import FileUpload
 from fastapi_admin.widgets import Widget
 
+from iso8601.iso8601 import is_iso8601
+
 
 class Input(Widget):
     template = "widgets/inputs/input.html"
@@ -26,6 +28,9 @@ class Input(Widget):
         :param value:
         :return:
         """
+        if self.context["null"]:
+            return value or None
+
         return value
 
     async def render(self, request: Request, value: Any):
@@ -206,9 +211,21 @@ class Editor(Text):
 class DateTime(Text):
     template = "widgets/inputs/datetime.html"
 
+    async def parse_value(self, request: Request, value: Any):
+        if not is_iso8601(value):
+            value = ""
+
+        return await super().parse_value(request, value)
+
 
 class Date(Text):
     template = "widgets/inputs/date.html"
+
+    async def parse_value(self, request: Request, value: Any):
+        if not is_iso8601(value):
+            value = ""
+
+        return await super().parse_value(request, value)
 
 
 class File(Input):

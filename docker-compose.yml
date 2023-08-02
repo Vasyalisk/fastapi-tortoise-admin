@@ -2,8 +2,23 @@ version: "3"
 services:
   app:
     build: .
-    restart: always
     env_file: .env
-    network_mode: host
     image: fastapi-admin
-    command: uvicorn examples.main:app_ --port 8000 --host 0.0.0.0
+    command: uvicorn examples.main:app_ --port 8000 --host 0.0.0.0 --reload
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./examples:/fastapi-admin/examples
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: fastapi-admin
+
+  redis:
+    image: redis
+
