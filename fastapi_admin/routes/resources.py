@@ -240,6 +240,7 @@ async def create(
         "page_title": model_resource.page_title,
         "page_pre_title": model_resource.page_pre_title,
     }
+
     try:
         return templates.TemplateResponse(
             f"admin/{resource}/create.html",

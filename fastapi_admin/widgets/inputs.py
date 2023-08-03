@@ -19,8 +19,7 @@ class Input(Widget):
     def __init__(
             self, help_text: Optional[str] = None, default: Any = None, null: bool = False, **context
     ):
-        super().__init__(null=null, help_text=help_text, **context)
-        self.default = default
+        super().__init__(null=null, help_text=help_text, default=default, **context)
 
     async def parse_value(self, request: Request, value: Any):
         """
@@ -35,7 +34,8 @@ class Input(Widget):
 
     async def render(self, request: Request, value: Any):
         if value is None:
-            value = self.default
+            value = self.context["default"]
+
         return await super(Input, self).render(request, value)
 
 

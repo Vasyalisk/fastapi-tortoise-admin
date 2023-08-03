@@ -20,7 +20,7 @@ class Admin(Model):
 
 class Category(Model):
     slug = fields.CharField(max_length=200)
-    name = fields.CharField(max_length=200)
+    name = fields.CharField(max_length=200, default="")
     created_at = fields.DatetimeField(auto_now_add=True)
 
 

@@ -128,6 +128,7 @@ class UsernamePasswordProvider(Provider):
             admin_id = await redis.get(token_key)
             admin = await self.admin_model.get_or_none(pk=admin_id)
         request.state.admin = admin
+        request.state.username_field_name = self.username_field_name
 
         if path == self.login_path and admin:
             return RedirectResponse(url=request.app.admin_path, status_code=HTTP_303_SEE_OTHER)
@@ -149,7 +150,6 @@ class UsernamePasswordProvider(Provider):
         exists = await self.admin_model.all().limit(1).exists()
         if exists:
             return self.redirect_login(request)
-        request.state.username_field_name = self.username_field_name
         return templates.TemplateResponse("admin/init.html", context={"request": request})
 
     async def init(
