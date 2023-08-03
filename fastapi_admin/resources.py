@@ -160,12 +160,7 @@ class Model(Resource):
         return {}
 
     async def get_actions(self, request: Request) -> List[Action]:
-        return [
-            Action(
-                label=_("Update"), icon="ti ti-edit", name="update", method=Method.GET, ajax=False
-            ),
-            Action(label=_("Delete"), icon="ti ti-trash", name="delete", method=Method.DELETE),
-        ]
+        return []
 
     async def get_bulk_actions(self, request: Request) -> List[Action]:
         return [

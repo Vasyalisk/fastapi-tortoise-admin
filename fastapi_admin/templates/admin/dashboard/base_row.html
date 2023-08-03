@@ -1,0 +1,51 @@
+<tr {% for k,v in row_attributes[index].items() %}{{ k }}="{{ v }}"{% endfor %}>
+{% block row_body %}
+    {% if model_resource.bulk_actions %}
+        <td>
+            <input
+                    data-id="{{ value[0]|int }}"
+                    class="form-check-input m-0 align-middle checkbox-select-item"
+                    type="checkbox"
+            />
+        </td>
+    {% endif %}
+    {% with outer_index = loop.index0 %}
+        {% for x in value %}
+            <td {% for k,v in cell_attributes[outer_index][loop.index0].items() %}
+            {{ k }}="{{ v }}"{% endfor %}>{{ x|safe }}</td>
+        {% endfor %}
+    {% endwith %}
+    {% if model_resource.actions %}
+        <td class="text-end">
+                      <span class="dropdown">
+                        <button
+                                class="btn dropdown-toggle align-text-top"
+                                data-bs-boundary="viewport"
+                                data-bs-toggle="dropdown"
+                        >
+                          {{ _('actions') }}
+                        </button>
+                        <div
+                                class="dropdown-menu dropdown-menu-end dropdown-menu-arrow"
+                        >
+                        {% for action in model_resource.actions %}
+                            {% set url = request.app.admin_path + '/' + resource +'/'+ action.name +'/'+ value[0]|string %}
+                            <a
+                                    class="dropdown-item"
+                                    {% if action.ajax %}
+                                    href="#"
+                                    onclick="onAction('{{ url }}','{{ action.method }}')"
+                                    {% else %}
+                                    href="{{ url }}"
+                                    {% endif %}
+                            >
+                            <i class="{{ action.icon }} me-2"></i>
+                            {{ action.label }}
+                          </a>
+                        {% endfor %}
+                        </div>
+                      </span>
+        </td>
+    {% endif %}
+{% endblock %}
+</tr>

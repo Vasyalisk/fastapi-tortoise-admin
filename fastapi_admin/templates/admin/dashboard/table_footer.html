@@ -1,0 +1,41 @@
+<div class="card-footer d-flex align-items-center">
+    <p class="m-0 text-muted">
+        {{ _('Showing %(from)s to %(to)s of %(total)s entries')|format(from=from,to=to,total=total) }}
+    </p>
+    <ul class="pagination m-0 ms-auto">
+        <li class="page-item {% if page_num <= 1 %} disabled {% endif %}">
+            <a
+                    class="page-link"
+                    href="{{ {'page_num':page_num - 1}|current_page_with_params }}"
+                    tabindex="-1"
+                    aria-disabled="true"
+            >
+                <i class="ti ti-chevron-left"></i>
+                {{ _('prev_page') }}
+            </a>
+        </li>
+        {% with total_page = (total/page_size)|round(0,'ceil')|int,start_page =
+        (1 if page_num <=3 else page_num - 2 ) %} {% for i in
+        range(start_page,[start_page + 5,total_page + 1]|min) %}
+            <li class="page-item {% if i == (page_num or 1) %} active {% endif %}">
+                <a
+                        class="page-link"
+                        href="{{ {'page_num':i}|current_page_with_params }}"
+                >{{ i }}</a
+                >
+            </li>
+        {% endfor %}
+            <li
+                    class="page-item {% if page_num >= total_page %} disabled {% endif %}"
+            >
+                <a
+                        class="page-link"
+                        href="{{ {'page_num':page_num + 1}|current_page_with_params }}"
+                >
+                    {{ _('next_page') }}
+                    <i class="ti ti-chevron-right"></i>
+                </a>
+            </li>
+        {% endwith %}
+    </ul>
+</div>
