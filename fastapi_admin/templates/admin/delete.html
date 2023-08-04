@@ -1,0 +1,41 @@
+{% extends "admin/layout.html" %}
+{% block page_body %}
+    <div class="col-12">
+        <div class="card">
+            <div class="card-status-start bg-danger"></div>
+            <div class="card-header">
+                <h3 class="card-title">{{ resource_label }}</h3>
+            </div>
+            <div class="card-body border-bottom py-3">
+                <p>Following objects will be deleted</p>
+                <div class="col-12">
+                    <div class="row row-deck">
+                        <div class="card">
+                            <div class="card-body">Short content</div>
+                            <div class="card-body">Short content</div>
+                            <div class="card-body">Short content</div>
+                            <div class="card-body">Short content</div>
+                            <div class="card-body">Short content</div>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="btn-list">
+                    <button class="btn btn-danger" id="deleteBtn">Delete</button>
+                    <a href="{{ request.app.admin_path }}/{{ resource }}/list" class="btn btn-secondary">Return</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        let redirectUrl = "{{ request.app.admin_path }}/{{ resource }}/list";
+        btn = document.getElementById("deleteBtn");
+        btn.addEventListener("click", () => {
+            let ids = {{ ids|tojson }};
+            let query = ids.map(val => `ids=${val}`).join("&");
+            let url = "{{ request.app.admin_path }}/{{ resource }}/delete?" + query
+            fetch(url, {method: "DELETE"});
+        });
+        document.location.href = redirectUrl;
+    </script>
+{% endblock %}

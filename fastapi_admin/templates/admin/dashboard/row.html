@@ -1,6 +1,14 @@
 {% extends "admin/dashboard/base_row.html" %}
 {% block row_body %}
     {{ super() }}
-    <td><a href="#" class="btn btn-primary btn-icon" aria-label="Detail"><img src="icons/form.png" alt="form"></a></td>
-    <td><a href="#" class="btn btn-danger btn-icon" aria-label="Delete"><img src="icons/trash.png" alt="trash"></a></td>
+    <td>
+        <a href="{{ request.app.admin_path }}/{{ resource }}/update/{{ values[index]["id"] }}" class="btn btn-primary btn-icon"
+           aria-label="Detail">
+            {% include "admin/icons/form.svg" %}
+        </a>
+        <a href="{{ request.app.admin_path }}/{{ resource }}/delete?ids={{ values[index]["id"] }}" class="btn btn-danger btn-icon"
+           aria-label="Delete">
+            {% include "admin/icons/trash.svg" %}
+        </a>
+    </td>
 {% endblock %}

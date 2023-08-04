@@ -168,7 +168,7 @@ class Model(Resource):
                 label=_("Delete selected"),
                 icon="ti ti-trash",
                 name="delete",
-                method=Method.DELETE,
+                method=Method.GET,
             ),
         ]
 

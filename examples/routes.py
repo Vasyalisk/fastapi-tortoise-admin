@@ -4,10 +4,10 @@ from starlette.responses import RedirectResponse
 from starlette.status import HTTP_303_SEE_OTHER, HTTP_404_NOT_FOUND
 
 from examples.models import Config
-from fastapi_admin.app import app
+from fastapi_admin.app import admin_app
 
 
-@app.put("/config/switch_status/{config_id}")
+@admin_app.put("/config/switch_status/{config_id}")
 async def switch_config_status(request: Request, config_id: int):
     config = await Config.get_or_none(pk=config_id)
     if not config:

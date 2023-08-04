@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Path
+from fastapi import APIRouter, Depends, Path, Query
 from jinja2 import TemplateNotFound
 from starlette.requests import Request
 from starlette.responses import RedirectResponse
@@ -6,6 +6,7 @@ from starlette.status import HTTP_303_SEE_OTHER
 from tortoise import Model
 from tortoise.fields import ManyToManyRelation
 from tortoise.transactions import in_transaction
+from typing import List, Optional
 
 from fastapi_admin.depends import get_model, get_model_resource, get_resources
 from fastapi_admin.resources import Model as ModelResource
@@ -18,13 +19,13 @@ router = APIRouter()
 
 @router.get("/{resource}/list")
 async def list_view(
-    request: Request,
-    model: Model = Depends(get_model),
-    resources=Depends(get_resources),
-    model_resource: ModelResource = Depends(get_model_resource),
-    resource: str = Path(...),
-    page_size: int = 10,
-    page_num: int = 1,
+        request: Request,
+        model: Model = Depends(get_model),
+        resources=Depends(get_resources),
+        model_resource: ModelResource = Depends(get_model_resource),
+        resource: str = Path(...),
+        page_size: int = 10,
+        page_num: int = 1,
 ):
     fields_label = model_resource.get_fields_label()
     fields = model_resource.get_fields()
@@ -91,12 +92,12 @@ async def list_view(
 
 @router.post("/{resource}/update/{pk}")
 async def update(
-    request: Request,
-    resource: str = Path(...),
-    pk: str = Path(...),
-    model_resource: ModelResource = Depends(get_model_resource),
-    resources=Depends(get_resources),
-    model=Depends(get_model),
+        request: Request,
+        resource: str = Path(...),
+        pk: str = Path(...),
+        model_resource: ModelResource = Depends(get_model_resource),
+        resources=Depends(get_resources),
+        model=Depends(get_model),
 ):
     form = await request.form()
     data, m2m_data = await model_resource.resolve_data(request, form)
@@ -150,12 +151,12 @@ async def update(
 
 @router.get("/{resource}/update/{pk}")
 async def update_view(
-    request: Request,
-    resource: str = Path(...),
-    pk: str = Path(...),
-    model_resource: ModelResource = Depends(get_model_resource),
-    resources=Depends(get_resources),
-    model=Depends(get_model),
+        request: Request,
+        resource: str = Path(...),
+        pk: str = Path(...),
+        model_resource: ModelResource = Depends(get_model_resource),
+        resources=Depends(get_resources),
+        model=Depends(get_model),
 ):
     obj = await model.get(pk=pk)
     inputs = await model_resource.get_inputs(request, obj)
@@ -184,10 +185,10 @@ async def update_view(
 
 @router.get("/{resource}/create")
 async def create_view(
-    request: Request,
-    resource: str = Path(...),
-    resources=Depends(get_resources),
-    model_resource: ModelResource = Depends(get_model_resource),
+        request: Request,
+        resource: str = Path(...),
+        resources=Depends(get_resources),
+        model_resource: ModelResource = Depends(get_model_resource),
 ):
     inputs = await model_resource.get_inputs(request)
     context = {
@@ -214,11 +215,11 @@ async def create_view(
 
 @router.post("/{resource}/create")
 async def create(
-    request: Request,
-    resource: str = Path(...),
-    resources=Depends(get_resources),
-    model_resource: ModelResource = Depends(get_model_resource),
-    model=Depends(get_model),
+        request: Request,
+        resource: str = Path(...),
+        resources=Depends(get_resources),
+        model_resource: ModelResource = Depends(get_model_resource),
+        model=Depends(get_model),
 ):
     inputs = await model_resource.get_inputs(request)
     form = await request.form()
@@ -260,9 +261,44 @@ async def delete(request: Request, pk: str, model: Model = Depends(get_model)):
 
 
 @router.delete("/{resource}/delete")
-async def bulk_delete(request: Request, ids: str, model: Model = Depends(get_model)):
-    await model.filter(pk__in=ids.split(",")).delete()
+async def bulk_delete(request: Request, ids: List[str] = Query(), model: Model = Depends(get_model)):
+    # await model.filter(pk__in=ids).delete()
     return RedirectResponse(url=request.headers.get("referer"), status_code=HTTP_303_SEE_OTHER)
+
+
+@router.get("/{resource}/delete")
+async def delete_view(
+        request: Request,
+        ids: Optional[List[str]] = Query(None),
+        model: Model = Depends(get_model),
+        resources=Depends(get_resources),
+        model_resource: ModelResource = Depends(get_model_resource),
+        resource: str = Path(...),
+):
+    if ids is None:
+        ids = []
+
+    models = list(await model.filter(pk__in=ids))
+    context = {
+        "request": request,
+        "ids": ids,
+        "resource": resource,
+        "resources": resources,
+        "resource_label": model_resource.label,
+        "models": models,
+        "model_resource": model_resource,
+    }
+    try:
+        return templates.TemplateResponse(
+            f"admin/{resource}/delete.html",
+            context=context,
+        )
+    except TemplateNotFound:
+        return templates.TemplateResponse(
+            "admin/delete.html",
+            context=context,
+        )
+
 
 @router.get("/")
 async def home(request: Request, resources=Depends(get_resources)):

@@ -9,18 +9,13 @@
                 <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
                     {% for action in model_resource.bulk_actions %}
                         {% set url = request.app.admin_path + '/' + resource +'/'+ action.name %}
-                        <a
+                        <div
                                 class="dropdown-item"
-                                {% if action.ajax %}
-                                href="#"
                                 onclick="onBulkAction('{{ url }}','{{ action.method }}')"
-                                {% else %}
-                                href="{{ url }}"
-                                {% endif %}
                         >
                     <i class="{{ action.icon }} me-2"></i>
                     {{ action.label }}
-                  </a>
+                  </div>
                     {% endfor %}
                 </div>
               </span>

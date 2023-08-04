@@ -38,10 +38,18 @@
             let ids = $('.checkbox-select-item:checked').map(function () {
                 return $(this).attr('data-id')
             }).get();
+
+            if (method === "GET") {
+                query = ids.map(val => `ids=${val}`).join("&");
+                window.location.href = url + "?" + query;
+                return;
+            }
+
             if (ids.length > 0) {
-                console.log(ids)
+                console.log(ids);
+                let query = ids.map(val => `ids=${val}`).join("&");
                 $.ajax({
-                    url: url + '?ids=' + ids,
+                    url: url + '?' + query,
                     method: method,
                     success: function () {
                         location.reload();

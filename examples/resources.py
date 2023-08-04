@@ -6,23 +6,23 @@ from starlette.requests import Request
 from examples import enums
 from examples.constants import BASE_DIR
 from examples.models import Admin, Category, Config, Product
-from fastapi_admin.app import app
+from fastapi_admin.app import admin_app
 from fastapi_admin.enums import Method
 from fastapi_admin.file_upload import FileUpload
 from fastapi_admin.resources import Action, Dropdown, Field, Link, Model, ToolbarAction
 from fastapi_admin.widgets import displays, filters, inputs
 
-upload = FileUpload(uploads_dir=os.path.join(BASE_DIR, "static", "uploads"))
+upload = FileUpload(uploads_dir=os.path.join(BASE_DIR, "static", "admin", "uploads"))
 
 
-@app.register
+@admin_app.register
 class Dashboard(Link):
     label = "Dashboard"
     icon = "fas fa-home"
     url = "/admin"
 
 
-@app.register
+@admin_app.register
 class AdminResource(Model):
     label = "Admin"
     model = Admin
@@ -72,7 +72,7 @@ class AdminResource(Model):
         return []
 
 
-@app.register
+@admin_app.register
 class Content(Dropdown):
     class CategoryResource(Model):
         label = "Category"
@@ -103,7 +103,7 @@ class Content(Dropdown):
     resources = [ProductResource, CategoryResource]
 
 
-@app.register
+@admin_app.register
 class ConfigResource(Model):
     label = "Config"
     model = Config
@@ -141,7 +141,7 @@ class ConfigResource(Model):
         return actions
 
 
-@app.register
+@admin_app.register
 class GithubLink(Link):
     label = "Github"
     url = "https://github.com/fastapi-admin/fastapi-admin"
@@ -149,7 +149,7 @@ class GithubLink(Link):
     target = "_blank"
 
 
-@app.register
+@admin_app.register
 class DocumentationLink(Link):
     label = "Documentation"
     url = "https://fastapi-admin-docs.long2ice.io"
@@ -157,7 +157,7 @@ class DocumentationLink(Link):
     target = "_blank"
 
 
-@app.register
+@admin_app.register
 class ProLink(Link):
     label = "Pro Version"
     url = "https://fastapi-admin-pro.long2ice.io/admin/login"
